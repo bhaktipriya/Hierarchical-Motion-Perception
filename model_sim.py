@@ -1,5 +1,6 @@
 import numpy as np
 from hierarchical_motion_mcmc import hierarchical_motion_mcmc
+from defaults import set_defaults
 
 def simulator(pos,opts={}):
 	timesteps=len(pos)
@@ -24,4 +25,8 @@ def generate_positions(case):
 	return pos
 	
 pos=generate_positions(2)
-results=simulator(pos,{})		
+opts=set_defaults({})
+results=simulator(pos,opts)	
+for k in results:
+	print k
+	print results[k]	

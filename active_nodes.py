@@ -1,10 +1,12 @@
+import numpy as np
 def active_nodes(c,d):
-   #find which nodes are active
-
-    k_active = [];
-    for n in  range(len(c)):
-        k_active += [c[n][:d[n]]]; # go only till the depth for each cluster. and pick the unique nodes(objects), max no of clusters=objects
-    				   #check [:d[n]] vs [:] 
-    k_active = set(k_active);
-
+    #find which nodes are active
+    #nodes which occur on the paths of the objects	
+    objects, maxdep=np.shape(c)
+    k_active=np.array([])
+    for o in range(objects):
+    	obj_act=np.unique(c[o,:d[o]])
+	k_active=np.append(k_active,obj_act)
+    k_active=np.unique(k_active)
+    return k_active
 
