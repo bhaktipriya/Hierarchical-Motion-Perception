@@ -8,23 +8,26 @@ from nCRP import nCRP
 from scipy.misc import logsumexp
 from fastrandsample import fastrandsample
 from active_nodes import active_nodes
+from sq_dist import sq_dist
+from hierarchical_motion_score import hierarchical_motion_score
 def hierarchical_motion_mcmc(x,opts,results={}):
 	timesteps,objects,dims=np.shape(x)
+	print "Tsprets", timesteps
 	N = objects
 	sets=[]
 	if not 'sets' in opts: #set numbering begins with 0
 		opts['sets']=np.zeros(timesteps)	#put all in set 0
 	S=set(opts['sets']) #unique
 	if not 'cov' in opts:
-		opts['cov']=np.zeros((len(S),timesteps,objects,objects))#check if its okay to initialize it with zeroes
-	v=np.zeros((len(S),timesteps,objects,dims))
+		opts['cov']=np.zeros((len(S),timesteps-1,objects,objects))#check if its okay to initialize it with zeroes,init to timesteps-1(that's the conv followed
+	v=np.zeros((len(S),timesteps-1,objects,dims))
 		
 	for s in S:
 		ix=[ii for ii, xx in enumerate(opts['sets']) if xx == s]
 		s=int(s)	
 		for j in range(len(ix)-1):#why -1?
 			v[s][j]=x[ix[j+1]]-x[ix[j]]#velocitY
-			opts['cov'][s][j]=opts['tau']*np.exp(-0.5*np.linalg.norm(x[ix[j]])/opts['lambda'])
+			opts['cov'][s][j]=opts['tau']*np.exp(-0.5*sq_dist(x[ix[j]].T)/opts['lambda'])
 
 	d=np.zeros(objects)
 	c=np.zeros((objects,opts['d_max']))
@@ -67,7 +70,7 @@ def hierarchical_motion_mcmc(x,opts,results={}):
             	#add new parents if necessary
             	for j in range(1,d[n]): 
                 	if c[n][j]>=len(parents):
-				print parents, c[n][j]
+				#print parents, c[n][j]
                     		parents=np.append(parents,c[n][j-1])
 
                 #update depth allocations (gibbs sampling)
@@ -82,10 +85,6 @@ def hierarchical_motion_mcmc(x,opts,results={}):
                 		logp = logp/bt
                 		p = np.exp(logp-logsumexp(logp))
                 		d[n] = fastrandsample(p)+1	
-				if d[n]==0:
-					print "NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
-				 	break
-
 
 	results['c'] = c
         results['d'] = d
@@ -101,7 +100,7 @@ def hierarchical_motion_mcmc(x,opts,results={}):
     	#for ki in range(len(k_active)):
         #	for j in range(len(v[setnum])): #assume set is 0
         #    		m[(ki,j)] = gp_mean(v,setnum,j,c,k_active[ki],d,opts)#j, k may req -1 #this is the only call to gp_mean and takes set as 0 by default
-#        results['score'] = hierarchical_motion_score(x,c,parents,d,opts);
+        results['score'] = hierarchical_motion_score(x,c,parents,d,opts);
     	results['k_active'] = k_active
     	#results['m'] = m
     	results['c'] = c

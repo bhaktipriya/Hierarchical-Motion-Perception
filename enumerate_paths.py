@@ -13,7 +13,7 @@ def enumerate_paths(c,parents,d,n,opts):
     result=[]	
     for i in range(len(k_active)):
         f = int(k_active[i])
-	print f
+	#print f
         C[i] = [f]
         f = parents[f]
         while f!=-1: #watch out, indexing begins with 0 here, set parent of 0 to -1?

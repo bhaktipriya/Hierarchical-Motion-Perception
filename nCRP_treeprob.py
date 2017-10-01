@@ -1,3 +1,4 @@
+import numpy as np
 from scipy.special import gammaln
 def nCRP_treeprob(c,parents,g,D=[]):
     
@@ -7,20 +8,22 @@ def nCRP_treeprob(c,parents,g,D=[]):
     if D ==[]:
 	D=np.shape(c)[1]
     for d in range(D): # loop over levels
-        u = parents(unique(c(:,d))');   # set of parents for all customers at level d
+	u=[parents[i] for i in np.unique(c[:,d])] # set of parents for all customers at level d
         for j in u:
-            ix = parents(c(:,d)) == j;  % set of children of parent j
-            logp = logp + crp(c(ix,d)',g);
-        end
-    end
-    
-end
-
-def crp(c,g)
+            ix=[c[i,d] for i in range(len(c)) if parents[c[i,d]]==j ] #set of children of parent j
+            logp = logp + crp(ix,g)
+    return logp
+def crp(c,g):
     N = len(c)
     u = np.unique(c)
     K = len(u)
-    logp = gammaln(g) + K*log(g) - gammaln(N+g)
+    logp = gammaln(g) + K*np.log(g) - gammaln(N+g)
     for k in u:
         logp = logp + gammaln(sum(c==k))
     return logp
+
+#Unit tested! :)
+#c=np.array([[1,2,3],[1,2,5]])-1
+#parents=np.array([0,1,2,1,4])-1
+#g=1
+#print nCRP_treeprob(c,parents,g)

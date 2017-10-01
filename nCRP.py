@@ -8,13 +8,13 @@ def nCRP(c,parents,n,cn,g):
     c=np.delete(c, n, 0)
     logp = 0
 	
-    print cn	
-    print parents	
+    #print cn	
+    #print parents	
     #loop over levels in the tree
     for j in range(len(cn)): #ignored level 0
         if cn[j]>=len(parents):
             break
-	print "j=",j
+	#print "j=",j
         u = np.where(parents==parents[cn[j]])  #find all nodes that share common parent with proposed node
 	u=u[0] #get indices only, np where returns a tuple where 2nd arg is not not req
 	m = np.zeros(len(u))

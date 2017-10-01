@@ -62,9 +62,9 @@ def nCRP_sample(N,opts):
 	    if c[n,j] >= len(parents):  #new component added. Add it's parent
                 parents+=[p]
     parents=np.array(parents)
-    print c
-    print parents
-    print np.max(c), (np.size(parents)-1)
+    #print c
+    #print parents
+    #print np.max(c), (np.size(parents)-1)
     assert np.max(c)==(np.size(parents)-1)
     return (c,parents)
 

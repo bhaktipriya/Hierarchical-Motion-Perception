@@ -21,6 +21,7 @@ def gp_lik(v,c,d,opts):
                 L = cho_factor(K+opts['s2']*np.eye(objs))               #Cholesky factor of covariance with noise
 		alpha = cho_solve(L,v[s][i])
                 L=L[0]#knock out the boolean
+		#print opts['cov'][s][i]
                 lik = lik - np.dot(v[s,i].flatten(),(alpha.flatten()/2)) - np.sum(np.log(np.diag(L))) - 0.5*objs*np.log(2*np.pi*opts['s2']) #log marginal likelihood
     return lik
 #exactly same, no 0-1 scaling done
