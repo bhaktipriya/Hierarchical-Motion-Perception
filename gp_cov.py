@@ -32,6 +32,7 @@ def gp_cov(K0,c,d):
 
         K = K + (p==q.T).astype(int)
     K = K*K0
+    #print K
     return K
 #K0=np.array([[1.0000, 0.9950],[0.9950,1.0000]])
 #c=np.array([ [1.0,2.0,3.0],[1.0,2.0,5.0]])-1

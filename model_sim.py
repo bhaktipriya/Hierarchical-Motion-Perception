@@ -1,6 +1,7 @@
 import numpy as np
 from hierarchical_motion_mcmc import hierarchical_motion_mcmc
 from defaults import set_defaults
+from pos_gen import pos_gen
 
 def simulator(pos,opts={}):
 	timesteps=len(pos)
@@ -31,20 +32,14 @@ def generate_positions(case):
                 	x[i,1] = x[i-1,1] + np.array([theta, 0])
                 	x[i,0] = x[i,1] + np.dot(x[i-1,0]-x[i-1,1],R)
 		pos=x
-	if case==4:
-		n=20
-		
 	return pos
 	
-pos=generate_positions(3)
+pos=generate_positions(1)
 opts=set_defaults({})
 results=simulator(pos,opts)	
 for k in results:
 	if k=="score":
 		print "SCORE=",results['score']
-	#if k=="v":
-	#	print "VELOCITY"
-	#	print results['v']
 	if k=="parents":
 		print results['parents']
 	if k=="c" or k=="d":
